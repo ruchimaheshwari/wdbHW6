@@ -1,9 +1,13 @@
 import {useState} from "react";
+import axios from "axios";
 
 const NewPost = () => {
   const [id, setId] = useState();
   const [title, setTitle] = useState();
   const [body, setBody] = useState();
+  
+  const data = {"title": title, "id": id, "body": body};
+  const url = 'http://localhost:3002/post';
 
   const onSubmit = () => {
     console.log({
@@ -11,6 +15,11 @@ const NewPost = () => {
       title,
       body
     })
+
+    axios
+    .post(url, data) // `url` is the url to post to, `data` is the data to send in the body of the HTTP request
+    .then((response) => console.log(response))
+    .catch((error) => console.log(error));
   }
 
   return <div>

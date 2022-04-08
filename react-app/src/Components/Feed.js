@@ -1,34 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Post from "./Post";
 import NewPost from "./NewPost";
+import Comments from "./Comments";
+import axios from "axios";
 
 const Feed = () => {
-  const data = [
-    {
-      "id": 1,
-      "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-    },
-    {
-      "id": 2,
-      "title": "qui est esse",
-      "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
-    },
-    {
-      "id": 3,
-      "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
-      "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
-    },
-  ]
+  const [data, setData] = useState();
+
+  const getPostsData = () => {
+    axios
+      .get('http://localhost:3002/posts') //THIS IS YOUR URL OF YOUR API
+      .then((data) => setData(data.data)) //PROMISE API, THAT MEANS WHEN YOU GET THE DATA WHAT DO I DO WITH IT
+      .catch((error) => console.log(error)); //ERROR CATCHING IN CASE WE RECEIVE AN ERROR
+  };
+
+  useEffect(() => {
+    getPostsData();
+  }, []);
+  
 
   return (
     <div style={{ maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto'}}>
       {
-        data.map(d =>
-          <Post title={d.title} body={d.body} key={d.id} />
+        data?.map(d =>
+          [<Post title={d.title} body={d.body} key={d.id} />,
+          <Comments existingComments={d.comments} postId={d.id}/>]
         )
+        
       }
-
+      <br/>
+      <br/>
+      <br/>
+      <h3>Make a New Post</h3>
+      <p>After submitting, refresh to see your post on your feed!</p>
       <NewPost/>
     </div>
   )
